@@ -1,4 +1,7 @@
-# Database design for football league
+# Database design for Football League 
+
+#### Objective: 
+Design and implement a database that captures details about football matches, including teams, players, matches, and goals. Use triggers to ``automatically update`` match results and team standings after each match.
 
 
 #### Project Overview
