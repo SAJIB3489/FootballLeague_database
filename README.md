@@ -349,7 +349,10 @@ LIMIT 5;
 DROP TRIGGER <Trigger name>;
 
 ```
+
 Drop Trigger
-```DROP TRIGGER <Trigger name>;
+```
+DROP TRIGGER <Trigger name>;
+
 ```
 
