@@ -384,4 +384,4 @@ WHERE condition;
 
 ## Acknowledgements
 This database was designed and implemented as part of a project for a course, and successfully tested without errors. Special thanks to the course lecturer for his guidance and support. I received 5 points out of 5.<br>
-**If you get any error feel free to send a email to me, I will assist you**
+**If you get any error feel free to send a email to me, I will assist you.**
