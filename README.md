@@ -45,3 +45,5 @@ CREATE TABLE Teams (
     city VARCHAR(50),
     points VARCHAR(20)
 );
+
+![Teams](/image/Teams.png)
