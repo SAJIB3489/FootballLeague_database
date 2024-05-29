@@ -202,3 +202,154 @@ END;
 DELIMITER ;
 
 ```
+
+
+## Data Insertion
+
+### Teams Data
+
+```sql
+INSERT INTO Teams (team_id, team_name, abb, city, points)
+VALUES
+    (16782, 'Bangladesh Police FC', 'BPF', 'Mymensingh',0),
+    (16049, 'Bashundhara Kings', 'BDK', 'Dhaka',0),
+    (16653, 'Brothers Union', 'BSU', 'Dhaka',0),
+    (16745, 'Chittagong Abahani Limited', 'CAL', 'Chittagong',0);
+
+```
+
+
+### Players Data
+
+```sql
+INSERT INTO Players (player_id, player_name, team_id, position, nationality)
+VALUES
+    (1, 'Russel Mahmud Liton', 16782, 'DF', 'Bangladesh'),
+    (3, 'Arifur Rahman Raju', 16782, 'FW', 'Bangladesh'),
+    (4, 'Mohammad Emon', 16782, 'DF', 'Bangladesh'),
+    (5, 'Rabiul Islam', 16782, 'DF', 'Bangladesh'),
+    (6, 'Monaem Khan Raju', 16782, 'MF', 'Bangladesh'),
+    (7, 'M S Bablu', 16782, 'FW', 'Bangladesh'),
+    (26, 'Anisur Rahman Zico', 16049, 'GK', 'Bangladesh'),
+    (27, 'Yeasin Arafat', 16049, 'DF', 'Bangladesh'),
+    (28, 'Topu Barman', 16049, 'DF', 'Bangladesh'),
+    (29, 'Tutul Hossain Badsha', 16049, 'DF', 'Bangladesh'),
+    (30, 'Shohel Rana', 16049, 'MF', 'Bangladesh'),
+    (31, 'Masuk Mia Jony', 16049, 'MF', 'Bangladesh'),
+    (42, 'Md Mojnu Miah', 16653, 'GK', 'Bangladesh'),
+    (43, 'Patrick Sylva', 16653, 'MF', 'The Gambia'),
+    (44, 'Md Saiful Islam', 16653, 'GK', 'Bangladesh'),
+    (45, 'Pape Musa Faye', 16653, 'DF', 'The Gambia'),
+    (46, 'Md Showkat Helal Mia', 16653, 'GK', 'Bangladesh'),
+    (47, 'Chamir Ullah Rocky', 16653, 'FW', 'Bangladesh'),
+    (55, 'Ashraful Islam Rana', 16745, 'GK', 'Bangladesh'),
+    (56, 'Raihan Hasan', 16745, 'DF', 'Bangladesh'),
+    (57, 'Rashedul Alam Moni', 16745, 'DF', 'Bangladesh'),
+    (58, 'Yeasin Khan', 16745, 'DF', 'Bangladesh'),
+    (59, 'Nasiruddin Chowdhury', 16745, 'DF', 'Bangladesh'),
+    (60, 'Imran Hassan Remon', 16745, 'MF', 'Bangladesh');
+
+```
+
+
+### Matches Data
+
+```sql
+INSERT INTO Matches (match_id, team1_id, team2_id, team1_goals, team2_goals, status)
+VALUES
+    (1, 16782, 16049, 1, 3, 'Scheduled'),
+    (2, 16653, 16745, 2, 0, 'Scheduled'),
+    (3, 16782, 16653, 1, 2, 'Scheduled'),
+    (4, 16049, 16745, 0, 0, 'Scheduled');
+
+```
+
+
+### Goals Data
+
+```sql
+INSERT INTO Goals (team_id, match_id, scoring_player_id, goal_description)
+VALUES
+    (16049, 1, 28, 'Goal scored by Bashundhara Kings'),
+    (16653, 2, 43, 'Goal scored by Brothers Union'),
+    (16653, 3, 46, 'Goal scored by Brothers Union');
+
+```
+
+### Results Data
+
+```sql
+INSERT INTO Results (team_id, points, wins, draws, losses, goals_for, goals_against)
+VALUES
+    (16782, 2, 0, 0, 2, 5, 2),
+    (16049, 3, 1, 1, 0, 1, 3),
+    (16653, 4, 2, 0, 0, 1, 4),
+    (16745, 0, 0, 1, 1, 2, 0);
+
+```
+
+
+## Views
+
+### Last 5 Matches
+
+```sql
+CREATE VIEW Last_5_Matches AS
+SELECT m.match_id, m.team1_id, m.team2_id, m.status,
+       (SELECT COUNT(*) FROM Goals WHERE match_id = m.match_id AND team_id = m.team1_id) AS team1_goals,
+       (SELECT COUNT(*) FROM Goals WHERE match_id = m.match_id AND team_id = m.team2_id) AS team2_goals
+FROM Matches m
+ORDER BY m.match_id DESC
+LIMIT 5;
+
+```
+
+![View last 5 Matches](/image/Last_5_Matches.png)
+
+
+### Top 5 Teams
+
+```sql
+CREATE VIEW Top_5_Teams AS
+SELECT team_id, points, wins, draws, losses, goals_for, goals_against, (goals_for - goals_against) AS goal_difference
+FROM Results
+ORDER BY points DESC, goal_difference DESC
+LIMIT 5;
+
+```
+
+![View Top 5 Teams](/image/Top_5_Teams.png)
+
+
+### Top 5 Scorers
+
+```sql
+CREATE VIEW Top_5_Scorers AS
+SELECT p.player_id, p.player_name, t.team_name, COUNT(*) AS goals_scored
+FROM Goals g
+JOIN Players p ON g.scoring_player_id = p.player_id
+JOIN Teams t ON g.team_id = t.team_id
+GROUP BY p.player_id, p.player_name, t.team_name
+ORDER BY goals_scored DESC
+LIMIT 5;
+
+```
+
+![View Top 5 Scorers](/image/Top_5_Scorers.png)
+
+
+
+## Extra Commands
+
+**Some helpful command note that I used during the project**
+
+```
+
+#Drop Trigger
+DROP TRIGGER <Trigger name>;
+
+```
+Drop Trigger
+```DROP TRIGGER <Trigger name>;
+```
+
