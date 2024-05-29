@@ -46,4 +46,4 @@ CREATE TABLE Teams (
     points VARCHAR(20)
 );
 
-![Teams](/image/Teams.png)
+![Teams](image/Teams.png)
