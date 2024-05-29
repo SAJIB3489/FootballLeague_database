@@ -50,3 +50,22 @@ CREATE TABLE Teams (
 ```
 
 ![Teams](/image/Teams.png)
+
+
+### Players
+
+```sql
+CREATE TABLE Players (
+    player_id INT PRIMARY KEY,
+    player_name VARCHAR(50),
+    team_id INT,
+    position VARCHAR(3),
+    nationality VARCHAR(50),
+    FOREIGN KEY (team_id) REFERENCES Teams(team_id)
+);
+
+```
+
+![Teams](/image/Players.png)
+
+
