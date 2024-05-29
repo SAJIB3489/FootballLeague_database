@@ -66,6 +66,139 @@ CREATE TABLE Players (
 
 ```
 
-![Teams](/image/Players.png)
+![Players](/image/Players.png)
 
 
+### Matches
+
+```sql
+CREATE TABLE Matches (
+    match_id INT PRIMARY KEY AUTO_INCREMENT,
+    team1_id INT,
+    team2_id INT,
+    team1_goals INT,
+    team2_goals INT,
+    status VARCHAR(50),
+    FOREIGN KEY (team1_id) REFERENCES Teams(team_id),
+    FOREIGN KEY (team2_id) REFERENCES Teams(team_id)
+);
+
+```
+
+![Matches](/image/Matches.png)
+
+
+### Goals
+
+```sql
+CREATE TABLE Goals (
+    team_id INT,
+    match_id INT PRIMARY KEY AUTO_INCREMENT,
+    scoring_player_id INT,
+    goal_description VARCHAR(255),
+    FOREIGN KEY (match_id) REFERENCES Matches(match_id),
+    FOREIGN KEY (team_id) REFERENCES Teams(team_id),
+    FOREIGN KEY (scoring_player_id) REFERENCES Players(player_id)
+);
+
+```
+
+![Goals](/image/goals.png)
+
+
+### Results
+
+```sql
+CREATE TABLE Results (
+    team_id INT PRIMARY KEY,
+    points INT,
+    wins INT,
+    draws INT,
+    losses INT,
+    goals_for INT,
+    goals_against INT,
+    FOREIGN KEY (team_id) REFERENCES Teams(team_id)
+);
+
+```
+
+![Results](/image/Results.png)
+
+
+## Triggers
+
+![Trigger idea](/image/Trigger.png)
+
+### Trigger to Update Match Results
+
+```sql
+DELIMITER //
+CREATE TRIGGER After_Match_Update
+AFTER UPDATE ON Matches
+FOR EACH ROW
+BEGIN
+    IF NEW.status = 'Finished' THEN
+        UPDATE Matches m
+        JOIN (SELECT match_id, team_id, COUNT(*) as goals
+              FROM Goals
+              GROUP BY match_id, team_id) g
+        ON m.match_id = g.match_id
+        SET m.team1_goals = CASE WHEN m.team1_id = g.team_id THEN g.goals ELSE m.team1_goals END,
+            m.team2_goals = CASE WHEN m.team2_id = g.team_id THEN g.goals ELSE m.team2_goals END
+        WHERE m.match_id = NEW.match_id;
+    END IF;
+END;
+//
+DELIMITER ;
+
+```
+
+
+### Trigger to Update Team Standings/ Goal Insertion Trigger
+
+```sql
+DELIMITER //
+CREATE TRIGGER After_Match_Finish
+AFTER UPDATE ON Matches
+FOR EACH ROW
+BEGIN
+    DECLARE team1_points INT DEFAULT 0;
+    DECLARE team2_points INT DEFAULT 0;
+    DECLARE team1_result VARCHAR(10);
+    DECLARE team2_result VARCHAR(10);
+
+    IF NEW.status = 'Finished' THEN
+        IF NEW.team1_goals > NEW.team2_goals THEN
+            SET team1_points = 3, team2_points = 0;
+            SET team1_result = 'win', team2_result = 'loss';
+        ELSEIF NEW.team1_goals < NEW.team2_goals THEN
+            SET team1_points = 0, team2_points = 3;
+            SET team1_result = 'loss', team2_result = 'win';
+        ELSE
+            SET team1_points = 1, team2_points = 1;
+            SET team1_result = 'draw', team2_result = 'draw';
+        END IF;
+
+        UPDATE Results
+        SET points = points + team1_points,
+            wins = wins + (team1_result = 'win'),
+            draws = draws + (team1_result = 'draw'),
+            losses = losses + (team1_result = 'loss'),
+            goals_for = goals_for + NEW.team1_goals,
+            goals_against = goals_against + NEW.team2_goals
+        WHERE team_id = NEW.team1_id;
+
+        UPDATE Results
+        SET points = points + team2_points,
+            wins = wins + (team2_result = 'win'),
+            draws = draws + (team2_result = 'draw'),
+            losses = losses + (team2_result = 'loss'),
+            goals_for = goals_for + NEW.team2_goals,
+            goals_against = goals_against + NEW.team1_goals
+        WHERE team_id = NEW.team2_id;
+    END IF;
+END;
+//
+DELIMITER ;
+
+```
