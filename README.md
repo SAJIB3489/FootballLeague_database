@@ -343,16 +343,45 @@ LIMIT 5;
 
 **Some helpful command note that I used during the project**
 
-```
-
-#Drop Trigger
+1. Drop Trigger
+```sql
 DROP TRIGGER <Trigger name>;
 
 ```
 
-Drop Trigger
-```
-DROP TRIGGER <Trigger name>;
+2. Drop Table
+```sql
+DROP TABLE <Table Name>;
 
 ```
 
+3. Check Table Data
+```sql
+SELECT * FROM <Table Name>;
+
+```
+4. Insert Data into a Table
+```sql
+INSERT INTO <Table Name> (column1, column2, ...)
+VALUES (value1, value2, ...);
+```
+5. Update Data in a Table
+```sql
+UPDATE <Table Name>
+SET column1 = value1, column2 = value2, ...
+WHERE condition;
+```
+6. Delete Data from a Table
+```sql
+DELETE FROM <Table Name>
+WHERE condition;
+```
+7. Select Data with a Condition
+```sql
+SELECT * FROM <Table Name>
+WHERE condition;
+```
+
+## Acknowledgements
+This database was designed and implemented as part of a project for a course, and successfully tested without errors. Special thanks to the course lecturer for their guidance and support. I received 5 points out of 5.<br>
+**If you get any error feel free to send a email to me, I will assist you**
