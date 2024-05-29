@@ -7,6 +7,8 @@ The ``Bangladesh Football League database`` project was created with a view of e
 This project gives a excellent idea to design a database for the teams. This knowledge and idea could be use in different purpose in future.
 
 
+![ER Diagram](/image/ER%20Diagram.png)
+
 
 ## Table of Contents
 
